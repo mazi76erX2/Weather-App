@@ -63,7 +63,7 @@ ROOT_URLCONF = 'weather_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,5 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # API Base Url
-API_BASE_URL = "https://api.weatherapi.com/v1/future.json?key="
+API_BASE_URL = "https://api.weatherapi.com/v1/forcast.json?key="
 API_KEY = os.getenv('API_KEY')
