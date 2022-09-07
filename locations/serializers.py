@@ -5,4 +5,5 @@ from .models import LocationWeather
 class LocationWeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationWeather
-        fields = ['maximum', 'minimum', 'average', 'median']
+        fields = ['locations', 'days' 'maximum',
+                  'minimum', 'average', 'median']

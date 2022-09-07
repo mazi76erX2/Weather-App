@@ -13,7 +13,7 @@ from rest_framework.permissions import AllowAny
 import requests
 
 
-class LocationWeatherView(APIVIew):
+class LocationWeatherView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = LocationWeatherSerializer
     lookup_field = 'location'
@@ -25,7 +25,7 @@ class LocationWeatherView(APIVIew):
         """
         url = f'{settings.API_BASE_URL}{settings.API_KEY}&q={location}&days={number_of_days}&aqi=no&alerts=no'
         start_date = datetime.now()
-        end_date = datetime.now() + timedelta(days=number_of_days)
+        end_date = datetime.now() + timedelta(days=int(number_of_days))
 
         response = requests.get(url)
         status_code = response.status_code
@@ -41,7 +41,7 @@ class LocationWeatherView(APIVIew):
             maximum = max(temperatures_max)
             minimum = min(temperatures_min)
             average = sum(temperatures_avg) / len(temperatures_avg)
-            median = median(temperatures_avg)
+            median_temp = median(temperatures_avg)
 
             location_weather = LocationWeather.objects.create(
                 location=location,
@@ -51,7 +51,7 @@ class LocationWeatherView(APIVIew):
                 maximum=maximum,
                 minimum=minimum,
                 average=average,
-                median=median,
+                median=median_temp,
             )
 
             location_weather = {
@@ -73,10 +73,12 @@ class LocationWeatherView(APIVIew):
 
         return data_response
 
-    def get(self, request, format=None):
-        location = self.request.query_params.get('location')
+    def get(self, request, location, format=None):
         days = self.request.query_params.get('days')
 
         forecast_data = self.get_location_forecast(location, days)
 
-        return Response(forecast_data)
+        if forecast_data['status'] == 200:
+            return Response(forecast_data['data'])
+        else:
+            return Response(forecast_data['message'])
