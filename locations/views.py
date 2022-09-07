@@ -8,6 +8,7 @@ from django.conf import settings
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 import requests
@@ -76,9 +77,13 @@ class LocationWeatherView(APIView):
     def get(self, request, location, format=None):
         days = self.request.query_params.get('days')
 
-        forecast_data = self.get_location_forecast(location, days)
-
-        if forecast_data['status'] == 200:
-            return Response(forecast_data['data'])
+        if (int(days) > 14) or (int(days) < 1):
+            # While testing I found that the API only returns data for 13 days.
+            return Response({"error": "Invalid number of days", "status": status.HTTP_400_BAD_REQUEST})
         else:
-            return Response(forecast_data['message'])
+            forecast_data = self.get_location_forecast(location, days)
+
+            if forecast_data['status'] == 200:
+                return Response(forecast_data['data'])
+            else:
+                return Response({"error": forecast_data['message'], "status": forecast_data['status']})
