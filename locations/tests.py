@@ -38,7 +38,6 @@ class LocationWeatherTestCase(APITestCase):
 
     def make_request(self):
         url = f"{reverse('get-location-forecast', kwargs={'location': self.location})}?days={self.number_of_days}"
-        print(url)
         response = self.client.get(url, format='json')
 
         return response
