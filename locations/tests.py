@@ -8,8 +8,15 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 
-class LocationWeatherTestCase(TestCase):
+class LocationWeatherTestCase(APITestCase):
     def setUp(self):
+        self.number_of_days = 5
+        self.location = 'Johannesburg'
+
+    def tearDown(self):
+        LocationWeather.objects.all().delete()
+
+    def test_model_string(self):
         self.location_weather = LocationWeather.objects.create(
             location="Johannesburg",
             number_of_days=5,
@@ -21,20 +28,10 @@ class LocationWeatherTestCase(TestCase):
             median=26.1,
         )
 
-    def test_model_string(self):
-        self.assertTrue(isinstance(self.location_weather(), LocationWeather))
+        self.assertTrue(isinstance(self.location_weather, LocationWeather))
         self.assertEqual(
-            self.location_weather().__unicode__(),
+            self.location_weather.__str__(),
             f"{self.location_weather.location} - {self.location_weather.start_date} - {self.location_weather.end_date}")
-
-
-class LocationWeatherTestCase(APITestCase):
-    def setUp(self):
-        self.number_of_days = 5
-        self.location = 'Johannesburg'
-
-    def tearDown(self):
-        LocationWeather.objects.all().delete()
 
     def make_request(self):
         url = f"{reverse('get-location-forecast', kwargs={'location': self.location})}?days={self.number_of_days}"
