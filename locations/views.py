@@ -30,7 +30,7 @@ class LocationWeatherView(APIView):
 
         response = requests.get(url)
         status_code = response.status_code
-        data_response = {"status": response.status_code}
+        data_response = {"status_code": response.status_code}
 
         if status_code == 200:
             data = response.json()
@@ -77,13 +77,13 @@ class LocationWeatherView(APIView):
     def get(self, request, location, format=None):
         days = self.request.query_params.get('days')
 
-        if (int(days) > 14) or (int(days) < 1):
+        if (int(days) > 13) or (int(days) < 1):
             # While testing I found that the API only returns data for 13 days.
-            return Response({"error": "Invalid number of days", "status": status.HTTP_400_BAD_REQUEST})
+            return Response({"error": "Invalid number of days", "status_code": status.HTTP_400_BAD_REQUEST})
         else:
             forecast_data = self.get_location_forecast(location, days)
 
-            if forecast_data['status'] == 200:
+            if forecast_data['status_code'] == 200:
                 return Response(forecast_data['data'])
             else:
-                return Response({"error": forecast_data['message'], "status": forecast_data['status']})
+                return Response({"error": forecast_data['message'], "status_code": forecast_data['status_code']})

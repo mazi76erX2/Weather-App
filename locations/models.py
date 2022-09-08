@@ -11,7 +11,7 @@ class LocationWeather(models.Model):
     location = models.CharField(max_length=64)
     number_of_days = models.PositiveSmallIntegerField(
         default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(10)])
+        validators=[MinValueValidator(1), MaxValueValidator(13)])
     start_date = models.DateField()
     end_date = models.DateField()
     created = models.DateTimeField(auto_now_add=True, blank=True)

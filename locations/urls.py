@@ -1,5 +1,6 @@
-from django.urls import path
 from .views import LocationWeatherView
+
+from django.urls import path
 
 
 urlpatterns = [
